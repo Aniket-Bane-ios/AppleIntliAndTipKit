@@ -18,7 +18,7 @@ struct ToolbarActionsView: View {
                 ToolbarButtonsView(
                     systemName: "photo.on.rectangle.angled.fill",
                     size: 45,
-                    colors: [.white, .blue]
+                    colors: [.pink, .blue]
                 )
             }
             .onChange(of: selectedItem) {
