@@ -21,7 +21,11 @@ struct GlassEffectView: View {
                     .frame(width: UIScreen.main.bounds.width, height: 80)
                     .cornerRadius(24)
                 HStack {
-                    TextField("", text: $prompt, prompt: Text("Ask to do?").foregroundStyle(.gray))
+                    TextField(
+                        "",
+                        text: $prompt,
+                        prompt: Text("Ask to do?").foregroundStyle(.secondary)
+                    )
                         .padding(.leading, 20)
                         .foregroundStyle(Color(UIColor.lightGray))
                     Button(action: {
@@ -68,7 +72,7 @@ struct GlassEffectView: View {
             }
             .popoverTip(addPrompttip)
         }
-        .padding(.top, 500)
+        .padding(.top, 600)
     }
     
 }
