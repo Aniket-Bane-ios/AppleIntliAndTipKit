@@ -13,7 +13,7 @@ import TipKit
 struct DashBoardView: View {
     @State var presejt = false
     @State var selectedItem: PhotosPickerItem? = nil
-    @State var selectedImage: Image? = nil
+    @State var selectedImage: Image? = Image("model")
     @State var generateImage: Bool = false
     @State var prompt: String = ""
     
@@ -22,32 +22,36 @@ struct DashBoardView: View {
     var body: some View {
         NavigationView {
             ZStack {
+                LinearGradient(
+                    gradient: Gradient(
+                        colors: [
+                            .appleIntelligenceYellow,
+                            .appleIntelligenceIndigo,
+                            .appleIntelligenceBlue,
+                            .appleIntelligencePink
+                        ]
+                    ),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+)
+                .animation(.linear(duration: 2).repeatForever(autoreverses: true), value: UUID())
+                .edgesIgnoringSafeArea(.all)
                 VStack(spacing: 0) {
-                    if  selectedImage != nil {
+                    if selectedImage != nil {
                         selectedImage?
                             .resizable()
-                            .scaledToFill()
-                            .frame(height: UIScreen.main.bounds.height)
-                            .overlay(
-                                GlassEffectView(
-                                    prompt: $prompt,
-                                    generateImage: $generateImage
-                                )
-                            )
-                            .edgesIgnoringSafeArea(.all)
-                    } else {
-                            Image("model")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(height: UIScreen.main.bounds.height)
-                                .overlay(
-                                        GlassEffectView(
-                                            prompt: $prompt,
-                                            generateImage: $generateImage
-                                        )
-                                )
-                                .edgesIgnoringSafeArea(.all)
+                            .scaledToFit()
+                            .cornerRadius(16)
+                            .padding(.bottom, 100)
+                            .padding(.horizontal)
+                            .clipShape(RoundedRectangle(cornerRadius: 24))
                     }
+
+                }.overlay {
+                    GlassEffectView(
+                        prompt: $prompt,
+                        generateImage: $generateImage
+                    )
                 }
             }
             .toolbar {
@@ -57,9 +61,14 @@ struct DashBoardView: View {
                         selectedImage: $selectedImage
                     ).popoverTip(addGallerytip)
                     
-                    if selectedImage != nil {
+                 
+                }
+               
+
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    if selectedImage != Image("model") {
                         Button {
-                            selectedImage = nil
+                            selectedImage =  Image("model")
                         } label: {
                             ToolbarButtonsView(
                                 systemName:
@@ -69,10 +78,7 @@ struct DashBoardView: View {
                             )
                         }
                     }
-                }
-               
-
-                ToolbarItem(placement: .topBarLeading) {
+                    
                     Button {
                         if let url = URL(
                             string: "https://www.linkedin.com/in/aniket-bane")
@@ -103,9 +109,10 @@ struct DashBoardView: View {
                     if let data = try? Data(contentsOf: url),
                         let image = UIImage(data: data)
                     {
+                        prompt = ""
                         selectedImage = Image(uiImage: image)
                         DispatchQueue.main
-                            .asyncAfter(deadline: .now() + 5){
+                            .asyncAfter(deadline: .now() + 3){
                                 Task {await AddGalleryTipModel.showTip.donate()}
                             }
                     }
@@ -113,7 +120,7 @@ struct DashBoardView: View {
                 onCancellation: {
                     prompt = ""
                     DispatchQueue.main
-                        .asyncAfter(deadline: .now() + 5){
+                        .asyncAfter(deadline: .now() + 3){
                             Task {await AddGalleryTipModel.showTip.donate()}
                         }
                 }
